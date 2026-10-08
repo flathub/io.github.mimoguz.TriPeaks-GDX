@@ -1,17 +1,17 @@
 app-id: io.github.mimoguz.TriPeaks-GDX
 runtime: org.freedesktop.Platform
-runtime-version: "24.08"
+runtime-version: "26.08"
 command: io.github.mimoguz.TriPeaks-GDX.sh
 sdk: org.freedesktop.Sdk
 sdk-extensions:
-- org.freedesktop.Sdk.Extension.openjdk17
+  - org.freedesktop.Sdk.Extension.openjdk17
 
 finish-args:
-- --socket=fallback-x11
-- --socket=wayland
-- --share=ipc
-- --device=dri
-- --env=JAVA_HOME=/app/jre
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --share=ipc
+  - --device=dri
+  - --env=JAVA_HOME=/app/jre
 
 modules:
   - name: openjdk
@@ -20,6 +20,14 @@ modules:
       - /usr/lib/sdk/openjdk17/install.sh
 
   - name: tripeaks
+    buildsystem: simple
+    build-commands:
+      - cp -r bin /app
+      - cp -r lib /app
+      - install -Dm755 ${FLATPAK_ID}.sh -t /app/bin/
+      - install -Dm644 ${FLATPAK_ID}.metainfo.xml -t /app/share/metainfo/
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.svg -t /app/share/icons/hicolor/scalable/apps/
     sources:
       - type: archive
         url: https://github.com/mimoguz/tripeaks-gdx/releases/download/v1.2.3/lwjgl3-1.2.3.zip
@@ -33,15 +41,6 @@ modules:
         url: https://raw.githubusercontent.com/mimoguz/tripeaks-gdx/3ec0308981a68a6ccf0ac14f49618bf04371fdb2/io.github.mimoguz.TriPeaks-GDX.metainfo.xml
         sha256: 1a1405541d044223e1b91c1ab95ac4fbae13aec29476fb710c9ed19848c79722
       - type: file
-        dest-filename: icon.svg
         url: https://raw.githubusercontent.com/mimoguz/tripeaks-gdx/refs/tags/v1.2.3/lwjgl3/icons/logo.svg
         sha256: 37140a644755d6feb62d1e85f49ae6d098effa179a24324bc06b22a4b81bed77
-
-    buildsystem: simple
-    build-commands:
-      - cp -r bin /app
-      - cp -r lib /app
-      - install -m755 ${FLATPAK_ID}.sh -t /app/bin
-      - install -Dm644 ${FLATPAK_ID}.metainfo.xml -t /app/share/metainfo
-      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications
-      - install -Dm644 icon.svg /app/share/icons/hicolor/scalable/apps/${FLATPAK_ID}.svg
+        dest-filename: io.github.mimoguz.TriPeaks-GDX.svg
